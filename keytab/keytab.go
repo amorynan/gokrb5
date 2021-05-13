@@ -165,7 +165,7 @@ func (kt *Keytab) Unmarshal(b []byte) error {
 	n := 2
 	l, err := readInt32(b, &n, &endian)
 	if err != nil {
-		return err
+		return fmt.Errorf("=======readInt32 in 168:%+v", err)
 	}
 	for l != 0 {
 		if l < 0 {
@@ -188,26 +188,26 @@ func (kt *Keytab) Unmarshal(b []byte) error {
 			parsePrincipal(eb, &p, kt, &ke, &endian)
 			ke.Timestamp, err = readTimestamp(eb, &p, &endian)
 			if err != nil {
-				return err
+				return fmt.Errorf("=======read timestamp:%+v", err)
 			}
 			rei8, err := readInt8(eb, &p, &endian)
 			if err != nil {
-				return err
+				return fmt.Errorf("=======readInt8 :%+v", err)
 			}
 			ke.KVNO8 = uint8(rei8)
 			rei16, err := readInt16(eb, &p, &endian)
 			if err != nil {
-				return err
+				return fmt.Errorf("=======readInt16 in 200: %+v", err)
 			}
 			ke.Key.KeyType = int32(rei16)
 			rei16, err = readInt16(eb, &p, &endian)
 			if err != nil {
-				return err
+				return fmt.Errorf("=======readInt16 in 205: %+v", err)
 			}
 			kl := int(rei16)
 			ke.Key.KeyValue, err = readBytes(eb, &p, kl, &endian)
 			if err != nil {
-				return err
+				return fmt.Errorf("=======readByes: %+v", err)
 			}
 			// The 32-bit key version overrides the 8-bit key version.
 			// If at least 4 bytes are left after the other fields are read and they are non-zero
@@ -216,7 +216,7 @@ func (kt *Keytab) Unmarshal(b []byte) error {
 				// The 32-bit key may be present
 				ri32, err := readInt32(eb, &p, &endian)
 				if err != nil {
-					return err
+					return fmt.Errorf("=======readInt32 in 219: %+v", err)
 				}
 				ke.KVNO = uint32(ri32)
 			}
@@ -235,7 +235,7 @@ func (kt *Keytab) Unmarshal(b []byte) error {
 		// Read the size of the next entry
 		l, err = readInt32(b, &n, &endian)
 		if err != nil {
-			return err
+			return fmt.Errorf("=======readInt32 in 238: %+v", err)
 		}
 	}
 	return nil
